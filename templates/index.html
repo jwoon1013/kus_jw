@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <meta charset="UTF-8">
+    <title>Spring A반 10조 조운</title>
+    <!-- 이 아래로 : 구글 폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Song+Myung&display=swap" rel="stylesheet">
+    <!-- 이 위로 : 구글 폰트 -->
+
+    <style>
+
+        h1, h2, h3, a {
+            font-family: 'Song Myung', serif;
+        }
+
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        a:link {
+            text-decoration-line: none;
+            color: #e7ead8;
+        }
+
+        a:visited {
+            text-decoration-line: none;
+            color: #e7ead8;
+        }
+
+        a:hover {
+            text-decoration-line: none;
+            color: #b5b35c;
+        }
+
+        a:active {
+            text-decoration-line: none;
+            color: #b5b35c;
+
+        }
+
+        .jw_title {
+            width: 100%;
+            height: 10vh;
+
+            background-color: #556b2f;
+
+            color: white;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .jw_profile {
+            width: 100%;
+            height: 450px;
+
+            background-color: #556b2f;
+
+            color: white;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+        }
+
+        .jw_profile > img {
+            border-radius: 70%;
+        }
+
+        .jw_table {
+            background-color: #556b2f;
+            color: white;
+            font-size: large;
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        table {
+            border: 1px;
+            border-style: solid;
+            margin: 20px 20px ;
+
+        }
+
+        td {
+            border: 1px;
+            border-style: solid;
+            padding: 10px 10px;
+
+        }
+
+        .jw_button {
+            background-color: #556b2f;
+            width: 100%;
+            height: 80px;
+
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .jw_button > button {
+            width: 200px;
+            height: 50px;
+
+            background-color: transparent;
+            color: white;
+
+            border-radius: 50px;
+            border: 1px solid white;
+
+            margin-bottom: 10px;
+
+
+        }
+
+        .jw_button > button:hover {
+            border: 5px solid white;
+        }
+
+
+        .jw_postpage {
+            background-color: #556b2f;
+            padding-bottom: 20px;
+        }
+
+        .jw_post {
+            border-radius: 5px;
+            background-color: white;
+            width: 95%;
+            max-width: 50vh;
+            margin: 0px auto 0px auto;
+
+            box-shadow: 0px 0px 3px 0px black;
+            padding: 20px;
+        }
+
+        .jw_post > button {
+            margin-top: 15px;
+        }
+
+
+        .jw_comments {
+            background-color: #556b2f;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 30vh;
+        }
+
+        .jw_comment {
+            border-radius: 5px;
+            background-color: white;
+            width: 95%;
+            max-width: 700px;
+            margin-bottom: 10px;
+
+            box-shadow: 0px 0px 3px 0px black;
+            padding: 20px;
+        }
+
+        .jw_comment > .comment-body {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            jw_show()
+            close_commets_page()
+        });
+
+        function jw_post() {
+            let jw_nickname = $('#name').val()
+            let jw_comment = $('#comment').val()
+
+            if (jw_nickname == '' && jw_comment == '') {
+                alert('닉네임과 방명록 메세지를 입력하세요')
+            } else if (jw_comment == '') {
+                alert('방명록 메세지를 입력하세요')
+            } else if (jw_nickname == '') {
+                alert('닉네임을 입력하세요')
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: '/kus_jw',
+                    data: {jw_nickname_give: jw_nickname, jw_comment_give: jw_comment},
+                    success: function (response) {
+                        alert(response['msg'])
+                        window.location.reload()
+                    }
+                })
+            }
+        }
+
+        function jw_show() {
+            $.ajax({
+                type: "GET",
+                url: "/kus_jw",
+                data: {},
+                success: function (response) {
+                    let rows = response['jw_comment_list']
+                    for (let i = 0; i < rows.length; i++) {
+                        let nickname = rows[i]['nickname']
+                        let comment = rows[i]['comment']
+
+                        let temp_html = `<div class="jw_comment">
+                                            <div class="comment-body">
+                                                <blockquote class="blockquote mb-0">
+                                                    <p>${comment}</p>
+                                                    <footer class="blockquote-footer">${nickname}</footer>
+                                                </blockquote>
+                                            </div>
+                                        </div>`
+                        $('#comment-list').append(temp_html)
+                    }
+                }
+            });
+        }
+
+        function open_commets_page() {
+            $('#jw_postpage').show()
+        }
+
+        function close_commets_page() {
+            $('#jw_postpage').hide()
+        }
+
+    </script>
+
+</head>
+<body>
+<div class="jw_title">
+    <h1>about me</h1>
+</div>
+<div class="jw_profile">
+    <h1><img src="https://ifh.cc/g/gm8j5L.jpg" width="300px" height="300px" style="border-radius: 30%"></h1>
+    <h2>jo woon</h2>
+
+    <h3>💚<a href="https://velog.io/@jw221018" target="_blank">velog.me</a>💚</h3>
+</div>
+<div class="jw_table">
+    <table>
+        <tr align="center">
+            <td>
+            하던일
+            </td>
+            <td>입시학원업종에서 일했음</td>
+
+        </tr>
+        <tr align="center">
+            <td>
+            mbti
+            </td>
+            <td>INFJ</td>
+        </tr>
+        <tr align="center">
+            <td>
+            나의장점
+            </td>
+            <td>뭔가에 빠지면 몰입 잘함!</td>
+        </tr>
+        <tr align="center">
+            <td>
+            협업시 스타일
+            </td>
+            <td>여러의견이 나올때 요약정리하기</td>
+        </tr>
+        <tr align="center">
+            <td>
+            취미
+            </td>
+            <td>유튜브보기, 향단이 놀아주기, 폰게임</td>
+        </tr>
+    </table>
+</div>
+<div class="jw_button">
+    <button onclick="open_commets_page()">방명록 열기</button>
+</div>
+
+<div class="jw_postpage" id="jw_postpage">
+    <div class="jw_post">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="name" placeholder="url">
+            <label for="floatingInput">닉네임</label>
+        </div>
+        <div class="form-floating">
+<textarea class="form-control" placeholder="Leave a comment here" id="comment"
+          style="height: 100px"></textarea>
+            <label for="floatingTextarea2">방명록 메세지를 남겨주세요</label>
+        </div>
+        <button onclick="jw_post()" type="button" class="btn btn-dark">남기기</button>
+        <button onclick="close_commets_page()" type="button" class="btn btn-outline-dark">닫기</button>
+    </div>
+</div>
+<div class="jw_comments" id="comment-list">
+    <!-- 여기에 DB에서 넘어온 메세지들이 들어옵니다! -->
+</div>
+
+
+</body>
+</html>
